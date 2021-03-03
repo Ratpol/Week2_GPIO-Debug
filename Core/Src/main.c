@@ -47,6 +47,30 @@ UART_HandleTypeDef huart2;
 uint16_t ButtonMatrixState = 0;
 //Button TimeStamp
 uint32_t ButtonMatrixTimeStamp = 0;
+//  Check Pressing
+uint32_t PressButton[2] = { 0 };
+//state LED
+uint8_t LED = 0;
+//
+uint16_t StatePressButton = 0;
+enum StatePressButton {
+	StartPressing = 0,
+	//////////////////
+	PressButton0 = 4096,
+	PressButton1 = 256,
+	PressButton2 = 512,
+	PressButton3 = 1024,
+	PressButton4 = 16,
+	PressButton5 = 32,
+	PressButton6 = 64,
+	PressButton7 = 1,
+	PressButton8 = 2,
+	PressButton9 = 4,
+	PressButtonBS = 128,
+	PressButtonClear = 8,
+	PressButtonOK = 32768
+};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -102,6 +126,141 @@ int main(void) {
 
 		/* USER CODE BEGIN 3 */
 		ButtonMatrixUpdate();
+		PressButton[0] = ButtonMatrixState;
+		// Press == 0
+		if (PressButton[0] != 0 && PressButton[1] == 0) {
+			//
+			switch (StatePressButton) {
+			case 0:
+				if (ButtonMatrixState == PressButton6) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK
+						|| ButtonMatrixState == PressButtonBS) {
+					StatePressButton = 0;
+				} else {
+					StatePressButton = 0;
+				}
+				break;
+			case 1:
+				if (ButtonMatrixState == PressButton2) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+				break;
+			case 2:
+				if (ButtonMatrixState == PressButton3) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+
+				break;
+			case 3:
+				if (ButtonMatrixState == PressButton4) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+				break;
+			case 4:
+				if (ButtonMatrixState == PressButton0) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+				break;
+			case 5:
+				if (ButtonMatrixState == PressButton5) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+				break;
+			case 6:
+				if (ButtonMatrixState == PressButton0) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+				break;
+			case 7:
+				if (ButtonMatrixState == PressButton0) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+				break;
+			case 8:
+				if (ButtonMatrixState == PressButton0) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+				break;
+			case 9:
+				if (ButtonMatrixState == PressButton6) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+				break;
+			case 10:
+				if (ButtonMatrixState == PressButton8) {
+					StatePressButton += 1;
+				} else if (ButtonMatrixState == PressButtonClear
+						|| ButtonMatrixState == PressButtonOK) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+				break;
+			case 11:
+				if (ButtonMatrixState == PressButtonClear) {
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonOK) {
+					LED = 1;
+					StatePressButton = 0;
+				} else if (ButtonMatrixState == PressButtonBS) {
+					StatePressButton -= 1;
+				}
+				break;
+			}
+		}
+		PressButton[1] = PressButton[0];
+		if (LED == 1) {
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+		} else {
+			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+		}
 	}
 	/* USER CODE END 3 */
 }
@@ -255,14 +414,15 @@ static void MX_GPIO_Init(void) {
 /* USER CODE BEGIN 4 */
 //port/pin array , 0-3 input , 4-7 output
 GPIO_TypeDef *ButtonMatrixPort[8] = { GPIOA, GPIOB, GPIOB, GPIOB, GPIOA, GPIOC,
-		GPIOB, GPIOA };
+GPIOB, GPIOA };
 
-uint16_t ButtonMatrixPin[8] = { GPIO_PIN_10, GPIO_PIN_3, GPIO_PIN_5, GPIO_PIN_4, GPIO_PIN_9, GPIO_PIN_7, GPIO_PIN_6, GPIO_PIN_7 };
+uint16_t ButtonMatrixPin[8] = { GPIO_PIN_10, GPIO_PIN_3, GPIO_PIN_5, GPIO_PIN_4,
+GPIO_PIN_9, GPIO_PIN_7, GPIO_PIN_6, GPIO_PIN_7 };
 
 uint8_t ButtonMatrixRow = 0; // What R Now
 
 void ButtonMatrixUpdate() {
-	if (HAL_GetTick() - ButtonMatrixTimeStamp >= 100) {
+	if (HAL_GetTick() - ButtonMatrixTimeStamp >= 40) {
 		ButtonMatrixTimeStamp = HAL_GetTick();
 		int i = 0;
 		for (i = 0; i < 4; i++) {

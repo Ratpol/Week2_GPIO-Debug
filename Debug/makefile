@@ -28,34 +28,34 @@ endif
 
 -include ../makefile.defs
 
-BUILD_ARTIFACT_NAME := Week2_
+BUILD_ARTIFACT_NAME := Week2_GPIO Debug
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX := 
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME).$(BUILD_ARTIFACT_EXTENSION)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-Week2_.elf \
+Week2_GPIO\ Debug.elf \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-Week2_.list \
+Week2_GPIO\ Debug.list \
 
 OBJCOPY_BIN += \
-Week2_.bin \
+Week2_GPIO\ Debug.bin \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: Week2_.elf secondary-outputs
+main-build: Week2_GPIO\ Debug.elf secondary-outputs
 
 # Tool invocations
-Week2_.elf: $(OBJS) $(USER_OBJS) D:\2_2562\FRA222\ Microcontroller\ Interface\Github\Week2_\STM32F411RETX_FLASH.ld
-	arm-none-eabi-gcc -o "Week2_.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\2_2562\FRA222 Microcontroller Interface\Github\Week2_\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Week2_.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Week2_GPIO\ Debug.elf: $(OBJS) $(USER_OBJS) D:\2_2562\FRA222\ Microcontroller\ Interface\Github\Week2_\STM32F411RETX_FLASH.ld
+	arm-none-eabi-gcc -o "Week2_GPIO Debug.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\2_2562\FRA222 Microcontroller Interface\Github\Week2_\STM32F411RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Week2_GPIO Debug.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -64,13 +64,13 @@ default.size.stdout: $(EXECUTABLES)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Week2_.list: $(EXECUTABLES)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "Week2_.list"
+Week2_GPIO\ Debug.list: $(EXECUTABLES)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "Week2_GPIO Debug.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Week2_.bin: $(EXECUTABLES)
-	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "Week2_.bin"
+Week2_GPIO\ Debug.bin: $(EXECUTABLES)
+	arm-none-eabi-objcopy  -O binary $(EXECUTABLES) "Week2_GPIO Debug.bin"
 	@echo 'Finished building: $@'
 	@echo ' '
 
